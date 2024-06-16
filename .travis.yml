@@ -13,3 +13,11 @@ after_success:
   - docker build -t manal/multi-nginx ./nginx
   - docker build -t manal/multi-server ./server
   - docker build -t manal/multi-worker ./worker
+
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take all the images and push to docker-hub
+  - docker push manal/multi-client
+  - docker push manal/multi-nginx
+  - docker push manal/multi-server
+  - docker push manal/multi-worker
