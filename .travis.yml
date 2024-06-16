@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t manal/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true manal/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t manal/multi-client ./client
+  - docker build -t manal/multi-nginx ./nginx
+  - docker build -t manal/multi-server ./server
+  - docker build -t manal/multi-worker ./worker
