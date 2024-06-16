@@ -19,13 +19,17 @@ services:
   api:
     build:
       dockerfile: Dockerfile.dev
-      context: ./server
+      context: ./server # to look in the server, that's where we use the context property
     volumes:
-      - /app/node_modules
-      - ./server:/app
+      - /app/node_volumes #specifying do not override this folder, just leave it as it is
+      - ./server:/app #copy everything inside the server directory to /app(working) directory inside the container
+        # so if we change anything inside server directory , we will see same change in app directory
+        # without re-building the docker image
     environment:
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      # variableName=value (sets a variable in the container at run time)
+      # variableName (takes the value from the computer)
+      - REDIS_HOST=redis # taken from the service name created above
+      - REDIS_PORT=6379 # taken from the documentation of redis docker image
       - PGUSER=postgres
       - PGHOST=postgres
       - PGDATABASE=postgres
@@ -39,7 +43,7 @@ services:
       context: ./client
     volumes:
       - /app/node_modules
-      - ./client:/app
+      - ./client:/app # everything inside the client directory should be shared with app directory
   worker:
     build:
       dockerfile: Dockerfile.dev
